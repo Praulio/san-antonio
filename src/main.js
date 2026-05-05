@@ -3,6 +3,7 @@ import { loadState } from './store.js';
 import { renderHome } from './ui-home.js';
 import { renderQueue } from './ui-queue.js';
 import { renderHistory } from './ui-history.js';
+import { renderTestimonios } from './ui-testimonios.js';
 
 let state = null;
 
@@ -22,6 +23,7 @@ function render(route) {
   if (route === 'home') renderHome(container, state);
   if (route === 'cola') renderQueue(container, state);
   if (route === 'historial') renderHistory(container, state);
+  if (route === 'testimonios') renderTestimonios(container, state);
 }
 
 boot();
