@@ -46,4 +46,12 @@
   .tab-bar a[aria-current="page"] {
     color: var(--color-accent);
   }
+
+  .santo-svg {
+    width: 70%;
+    max-width: 240px;
+    margin: 0 auto;
+    display: block;
+    color: var(--color-gold);
+  }
 }
