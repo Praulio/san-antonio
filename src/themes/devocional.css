@@ -1,0 +1,18 @@
+:root {
+  --color-bg: #F5EFE3;
+  --color-surface: #FAF6EC;
+  --color-text: #3A2E26;
+  --color-text-muted: #6E5A4A;
+  --color-accent: #B85C38;
+  --color-gold: #D4A574;
+  --color-border: #E5D9C2;
+
+  --font-display: 'Cormorant Garamond', 'Cormorant', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+
+  --shadow-soft: 0 2px 8px rgba(58, 46, 38, 0.08);
+}
