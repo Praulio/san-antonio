@@ -2,6 +2,7 @@ import { initRouter } from './router.js';
 import { loadState } from './store.js';
 import { renderHome } from './ui-home.js';
 import { renderQueue } from './ui-queue.js';
+import { renderHistory } from './ui-history.js';
 
 let state = null;
 
@@ -20,6 +21,7 @@ function render(route) {
   const container = document.querySelector(`[data-route="${route}"]`);
   if (route === 'home') renderHome(container, state);
   if (route === 'cola') renderQueue(container, state);
+  if (route === 'historial') renderHistory(container, state);
 }
 
 boot();
