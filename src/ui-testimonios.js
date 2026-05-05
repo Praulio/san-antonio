@@ -55,7 +55,7 @@ export function renderTestimonios(container, state) {
 function openShareTestimonio() {
   const { close, root } = openModal(`
     <h2 class="font-display text-2xl mb-2">Comparte tu testimonio</h2>
-    <p class="text-sm text-muted mb-5">La madrina lo aprobará antes de publicar.</p>
+    <p class="text-sm text-muted mb-5">Se revisa antes de publicar.</p>
     <form class="space-y-4">
       <label class="block">
         <span class="text-sm text-muted">Tu nombre</span>
@@ -91,7 +91,7 @@ function openShareTestimonio() {
       await submitTestimonio(APPS_SCRIPT_URL, data);
       root.querySelector('.modal-content').innerHTML = `
         <h2 class="font-display text-2xl mb-2">Gracias</h2>
-        <p class="text-muted text-sm mb-6">La madrina lo revisará y publicará pronto.</p>
+        <p class="text-muted text-sm mb-6">Lo revisamos y lo publicamos pronto.</p>
         <button class="btn-primary w-full" data-close-confirm>Cerrar</button>
       `;
       root.querySelector('[data-close-confirm]').addEventListener('click', close);

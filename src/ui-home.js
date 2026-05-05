@@ -18,8 +18,8 @@ export async function renderHome(container, state) {
           </span>
         </button>
       </div>
-      ${state.config?.mensaje_madrina ? `
-        <p class="mt-8 text-sm italic text-muted px-4 leading-relaxed">"${escape(state.config.mensaje_madrina)}"</p>
+      ${state.config?.mensaje_principal ? `
+        <p class="mt-8 text-sm italic text-muted px-4 leading-relaxed">"${escape(state.config.mensaje_principal)}"</p>
       ` : ''}
     </div>
   `;

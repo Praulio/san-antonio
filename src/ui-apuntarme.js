@@ -17,7 +17,7 @@ export function openApuntarme(state) {
       <label class="block">
         <span class="text-sm text-muted">WhatsApp</span>
         <input name="whatsapp" required type="tel" placeholder="+52" class="form-input mt-1" autocomplete="tel" />
-        <span class="text-xs text-muted mt-1 block">🔒 Solo la madrina lo verá</span>
+        <span class="text-xs text-muted mt-1 block">🔒 Es privado, solo se usa para avisarte</span>
       </label>
       <label class="block">
         <span class="text-sm text-muted">Mensaje opcional</span>
@@ -53,7 +53,7 @@ export function openApuntarme(state) {
         <h2 class="font-display text-2xl mb-2">Listo</h2>
         <p>Eres la <strong>#${pos}</strong> de la cola.</p>
         <p class="text-muted text-sm mt-2">Te tocaría aproximadamente del ${formatRange(inicio, fin)}.</p>
-        <p class="text-muted text-sm mt-2">La madrina te avisará por WhatsApp cuando se acerque tu turno.</p>
+        <p class="text-muted text-sm mt-2">Te avisamos por WhatsApp cuando se acerque tu turno.</p>
         <button class="btn-primary w-full mt-6" data-close-confirm>Cerrar</button>
       `;
       root.querySelector('[data-close-confirm]').addEventListener('click', close);
