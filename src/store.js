@@ -5,10 +5,10 @@ import { parseDate } from './format.js';
 
 export async function loadState() {
   const [participantes, turnos, testimonios, configRows] = await Promise.all([
-    readSheet(csvUrl(SHEET_GIDS.participantes)),
-    readSheet(csvUrl(SHEET_GIDS.turnos)),
-    readSheet(csvUrl(SHEET_GIDS.testimonios)),
-    readSheet(csvUrl(SHEET_GIDS.config))
+    readSheet(csvUrl(SHEET_GIDS.participantes, 'participantes')),
+    readSheet(csvUrl(SHEET_GIDS.turnos, 'turnos')),
+    readSheet(csvUrl(SHEET_GIDS.testimonios, 'testimonios')),
+    readSheet(csvUrl(SHEET_GIDS.config, 'config'))
   ]);
 
   const participanteById = Object.fromEntries(participantes.map(p => [p.id, p]));
