@@ -24,7 +24,7 @@ export async function renderHome(container, state) {
     </div>
   `;
 
-  await renderSanto(container.querySelector('.santo-mount'), { flipped: !!state.activo });
+  renderSanto(container.querySelector('.santo-mount'));
 
   container.querySelector('[data-action="apuntarme"]').addEventListener('click', () => openApuntarme(state));
   container.querySelector('[data-action="oracion"]').addEventListener('click', () => openOracion(state));
