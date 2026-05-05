@@ -46,7 +46,7 @@ function renderEmpty() {
   return `
     <p class="text-sm uppercase tracking-widest text-muted">Esta novena</p>
     <h1 class="font-display text-3xl mt-2">Aún no inicia</h1>
-    <p class="text-sm text-muted mt-2">La madrina apuntará a la primera persona pronto.</p>
+    <p class="text-sm text-muted mt-2">Pronto se apuntará a la primera persona.</p>
   `;
 }
 
