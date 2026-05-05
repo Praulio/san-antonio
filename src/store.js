@@ -1,18 +1,22 @@
-import { readSheet } from './api.js';
-import { csvUrl, SHEET_GIDS } from './config.js';
+import { APPS_SCRIPT_URL } from './config.js';
 import { findActivo, getQueue, getCompleted, estimateStartDate, daysRemaining } from './queue.js';
 import { parseDate } from './format.js';
 
+async function fetchAppData() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith('PUT_')) {
+    throw new Error('Configura appsScriptUrl en index.html');
+  }
+  const res = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
+  if (!res.ok) throw new Error(`Error leyendo datos (${res.status})`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
 export async function loadState() {
-  const [participantes, turnos, testimonios, configRows] = await Promise.all([
-    readSheet(csvUrl(SHEET_GIDS.participantes, 'participantes')),
-    readSheet(csvUrl(SHEET_GIDS.turnos, 'turnos')),
-    readSheet(csvUrl(SHEET_GIDS.testimonios, 'testimonios')),
-    readSheet(csvUrl(SHEET_GIDS.config, 'config'))
-  ]);
+  const { participantes, turnos, testimonios, config } = await fetchAppData();
 
   const participanteById = Object.fromEntries(participantes.map(p => [p.id, p]));
-  const config = Object.fromEntries((configRows[0] ? Object.entries(configRows[0]) : []));
   const turnoDays = Number(config.duracion_dias ?? 9);
 
   const activoTurno = findActivo(turnos);

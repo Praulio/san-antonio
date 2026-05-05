@@ -2,20 +2,60 @@ const SHEET_ID = 'PUT_THE_SHEET_ID_HERE';
 const TAB_PARTICIPANTES = 'participantes';
 const TAB_TURNOS = 'turnos';
 const TAB_TESTIMONIOS = 'testimonios';
+const TAB_CONFIG = 'config';
+
+// ============ Public API ============
+
+function doGet(e) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    // participantes: only id + nombre (whatsapp + notas stay private)
+    const participantes = readTab_(ss, TAB_PARTICIPANTES)
+      .map(r => ({ id: r.id, nombre: r.nombre }));
+
+    // turnos: all columns (none sensitive)
+    const turnos = readTab_(ss, TAB_TURNOS);
+
+    // testimonios: only those with publicar=si, strip the flag
+    const testimonios = readTab_(ss, TAB_TESTIMONIOS)
+      .filter(t => String(t.publicar).toLowerCase() === 'si')
+      .map(t => {
+        const { publicar, ...rest } = t;
+        return rest;
+      });
+
+    // config: first row, public fields only
+    const configRows = readTab_(ss, TAB_CONFIG);
+    const c = configRows[0] || {};
+    const config = {
+      duracion_dias: c.duracion_dias,
+      nombre_grupo: c.nombre_grupo,
+      mensaje_principal: c.mensaje_principal,
+      oracion_principal: c.oracion_principal
+    };
+
+    return ok({ participantes, turnos, testimonios, config });
+  } catch (err) {
+    return fail(err.message);
+  }
+}
 
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     const action = payload.action;
-    if (action === 'apuntarme') return ok(handleApuntarme(payload));
-    if (action === 'testimonio') return ok(handleTestimonio(payload));
+    if (action === 'apuntarme') return ok(handleApuntarme_(payload));
+    if (action === 'testimonio') return ok(handleTestimonio_(payload));
     return fail('Unknown action: ' + action);
   } catch (err) {
     return fail(err.message);
   }
 }
 
-function handleApuntarme(p) {
+// ============ Handlers ============
+
+function handleApuntarme_(p) {
   if (!p.nombre || !p.whatsapp) throw new Error('Faltan datos');
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const partTab = ss.getSheetByName(TAB_PARTICIPANTES);
@@ -39,7 +79,7 @@ function handleApuntarme(p) {
   return { ok: true, posicion: posicion, participante_id: participanteId };
 }
 
-function handleTestimonio(p) {
+function handleTestimonio_(p) {
   if (!p.nombre || !p.texto) throw new Error('Faltan datos');
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const partTab = ss.getSheetByName(TAB_PARTICIPANTES);
@@ -58,6 +98,17 @@ function handleTestimonio(p) {
     'no'
   ]);
   return { ok: true };
+}
+
+// ============ Helpers ============
+
+function readTab_(ss, name) {
+  const rows = ss.getSheetByName(name).getDataRange().getDisplayValues();
+  if (rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1)
+    .filter(r => r.some(cell => cell !== ''))
+    .map(r => Object.fromEntries(headers.map((h, i) => [h, r[i] || ''])));
 }
 
 function formatToday_() {

@@ -1,14 +1,3 @@
-import { parseCsv } from './csv.js';
-
-export async function readSheet(csvUrl) {
-  const res = await fetch(csvUrl, { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error(`Error leyendo Sheet (${res.status})`);
-  }
-  const text = await res.text();
-  return parseCsv(text);
-}
-
 export function validateApuntarmePayload({ nombre, whatsapp }) {
   const errors = [];
   if (!nombre || !nombre.trim()) errors.push('Falta el nombre');
