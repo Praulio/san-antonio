@@ -1,6 +1,7 @@
 import { initRouter } from './router.js';
 import { loadState } from './store.js';
 import { renderHome } from './ui-home.js';
+import { renderQueue } from './ui-queue.js';
 
 let state = null;
 
@@ -15,9 +16,10 @@ async function boot() {
 }
 
 function render(route) {
-  const container = document.querySelector(`[data-route="${route}"]`);
   if (!state) return;
+  const container = document.querySelector(`[data-route="${route}"]`);
   if (route === 'home') renderHome(container, state);
+  if (route === 'cola') renderQueue(container, state);
 }
 
 boot();
