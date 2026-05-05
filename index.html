@@ -7,8 +7,22 @@
     <title>San Antonio</title>
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
-  <body class="min-h-screen">
-    <div id="app"></div>
+  <body class="min-h-screen pb-20">
+    <main id="app" class="max-w-md mx-auto px-5 pt-8">
+      <section data-route="home" class="route">Cargando…</section>
+      <section data-route="cola" class="route hidden">Cargando…</section>
+      <section data-route="historial" class="route hidden">Cargando…</section>
+      <section data-route="testimonios" class="route hidden">Cargando…</section>
+    </main>
+
+    <nav class="tab-bar max-w-md mx-auto">
+      <a href="#home" data-tab="home">Inicio</a>
+      <a href="#cola" data-tab="cola">Cola</a>
+      <a href="#historial" data-tab="historial">Historial</a>
+      <a href="#testimonios" data-tab="testimonios">Testimonios</a>
+    </nav>
+
+    <div id="modal-root"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -1,2 +1,5 @@
-const app = document.getElementById('app');
-app.textContent = 'San Antonio — booting…';
+import { initRouter } from './router.js';
+
+initRouter(route => {
+  console.log('route:', route);
+});
