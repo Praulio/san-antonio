@@ -1,9 +1,8 @@
 import { defineConfig } from 'vite';
 
+const REPO = 'san-antonio';
+
 export default defineConfig({
-  base: './',
-  build: {
-    outDir: 'dist',
-    sourcemap: true
-  }
+  base: process.env.GITHUB_ACTIONS ? `/${REPO}/` : './',
+  build: { outDir: 'dist', sourcemap: true }
 });
