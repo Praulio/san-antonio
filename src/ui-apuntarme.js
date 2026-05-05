@@ -53,7 +53,7 @@ export function openApuntarme(state) {
         <h2 class="font-display text-2xl mb-2">Listo</h2>
         <p>Eres la <strong>#${pos}</strong> de la cola.</p>
         <p class="text-muted text-sm mt-2">Te tocaría aproximadamente del ${formatRange(inicio, fin)}.</p>
-        <p class="text-muted text-sm mt-2">Te avisamos por WhatsApp cuando se acerque tu turno.</p>
+        <p class="text-muted text-sm mt-2">Aquí mismo puedes seguir el avance — cuando se acerque tu turno lo vas a ver en la cola.</p>
         <button class="btn-primary w-full mt-6" data-close-confirm>Cerrar</button>
       `;
       root.querySelector('[data-close-confirm]').addEventListener('click', close);
