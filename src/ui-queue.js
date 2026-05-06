@@ -6,7 +6,7 @@ export function renderQueue(container, state) {
   const items = state.queue;
 
   container.innerHTML = `
-    <h2 class="font-display text-3xl mb-1">La cola</h2>
+    <h2 class="font-display text-3xl mb-1">La fila</h2>
     <p class="text-sm text-muted mb-6">${items.length} ${items.length === 1 ? 'persona esperando' : 'personas esperando'}</p>
 
     <ol class="space-y-4 relative pl-6">

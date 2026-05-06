@@ -9,7 +9,7 @@ export async function renderHome(container, state) {
       <div class="santo-mount mb-6"></div>
       ${state.activo ? renderActivo(state.activo) : renderEmpty()}
       <div class="mt-6 space-y-3">
-        <button class="btn-primary w-full" data-action="apuntarme">Apuntarme a la cola</button>
+        <button class="btn-primary w-full" data-action="apuntarme">Apuntarme a la fila</button>
         <button class="card w-full text-left flex items-center gap-3" data-action="oracion">
           <span class="text-2xl">🕯</span>
           <span>
@@ -35,7 +35,7 @@ function renderActivo(a) {
   const countdown = days != null ? countdownText(days) : '—';
   const fin = a.fechaFinEst ? formatDate(a.fechaFinEst) : '';
   return `
-    <p class="text-sm uppercase tracking-widest text-muted">Esta novena lo tiene</p>
+    <p class="text-sm uppercase tracking-widest text-muted">San Antonio lo tiene</p>
     <h1 class="font-display text-4xl mt-2 mb-4">${escape(a.participante?.nombre ?? '—')}</h1>
     <p class="text-2xl font-display text-accent">${countdown}</p>
     ${fin ? `<p class="text-sm text-muted mt-1">hasta el ${fin}</p>` : ''}
@@ -44,7 +44,7 @@ function renderActivo(a) {
 
 function renderEmpty() {
   return `
-    <p class="text-sm uppercase tracking-widest text-muted">Esta novena</p>
+    <p class="text-sm uppercase tracking-widest text-muted">San Antonio</p>
     <h1 class="font-display text-3xl mt-2">Aún no inicia</h1>
     <p class="text-sm text-muted mt-2">Pronto se apuntará a la primera persona.</p>
   `;

@@ -6,7 +6,7 @@ import { formatRange } from './format.js';
 
 export function openApuntarme(state) {
   const { close, root } = openModal(`
-    <h2 class="font-display text-2xl mb-1">Apuntarme a la cola</h2>
+    <h2 class="font-display text-2xl mb-1">Apuntarme a la fila</h2>
     <p class="text-sm text-muted mb-5">Vas a quedar la #${(state.queue?.length ?? 0) + 1} de la fila.</p>
 
     <form class="space-y-4">
@@ -51,9 +51,9 @@ export function openApuntarme(state) {
       const fin = new Date(inicio.getTime() + TURNO_DAYS * 86400000);
       root.querySelector('.modal-content').innerHTML = `
         <h2 class="font-display text-2xl mb-2">Listo</h2>
-        <p>Eres la <strong>#${pos}</strong> de la cola.</p>
+        <p>Eres la <strong>#${pos}</strong> de la fila.</p>
         <p class="text-muted text-sm mt-2">Te tocaría aproximadamente del ${formatRange(inicio, fin)}.</p>
-        <p class="text-muted text-sm mt-2">Aquí mismo puedes seguir el avance — cuando se acerque tu turno lo vas a ver en la cola.</p>
+        <p class="text-muted text-sm mt-2">Aquí mismo puedes seguir el avance — cuando se acerque tu turno lo vas a ver en la fila.</p>
         <button class="btn-primary w-full mt-6" data-close-confirm>Cerrar</button>
       `;
       root.querySelector('[data-close-confirm]').addEventListener('click', close);
