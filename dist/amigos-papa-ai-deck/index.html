@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Forward Deployed AI — Acompañamiento operativo para empresas</title>
+<style>
+:root{
+  --ink:#0b0d12;
+  --ink-2:#151922;
+  --paper:#f5f5f7;
+  --paper-2:#ffffff;
+  --muted:#737782;
+  --muted-dark:#a7adba;
+  --line:rgba(11,13,18,.10);
+  --line-dark:rgba(255,255,255,.16);
+  --blue:#0071e3;
+  --blue-2:#2997ff;
+  --violet:#6d5cff;
+  --green:#0b7a53;
+  --amber:#9b6a17;
+  --red:#b42318;
+  --shadow:0 28px 70px rgba(0,0,0,.18),0 10px 28px rgba(0,0,0,.12);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#05060a;color:var(--ink);font-family:var(--font)}
+button{font:inherit}
+.deck-stage{position:fixed;inset:0;display:grid;place-items:center;background:
+  radial-gradient(1100px 650px at 88% 8%,rgba(41,151,255,.18),transparent 62%),
+  radial-gradient(800px 500px at 12% 92%,rgba(109,92,255,.16),transparent 60%),#05060a;}
+.deck{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;background:#000;box-shadow:0 22px 100px rgba(0,0,0,.55);overflow:hidden}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;background:var(--paper);color:var(--ink);padding:88px 112px 76px}
+.slide.active{display:block}
+.slide.dark{background:#000;color:#fff}
+.slide.midnight{background:#080a10;color:#fff}
+.slide.white{background:#fff;color:var(--ink)}
+.slide.gray{background:#f5f5f7;color:var(--ink)}
+.slide.blueprint{background:#f7f9fc;color:var(--ink)}
+.topbar{position:absolute;top:38px;left:112px;right:112px;display:flex;align-items:center;justify-content:space-between;font-size:22px;color:rgba(0,0,0,.55);letter-spacing:-.02em;z-index:5}
+.dark .topbar,.midnight .topbar{color:rgba(255,255,255,.68)}
+.brand{display:flex;gap:14px;align-items:center;font-weight:600;color:inherit}
+.brand-mark{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 0 0 7px rgba(0,113,227,.09)}
+.slide-no{display:none}
+.kicker{font-size:22px;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:var(--blue);margin-bottom:30px}
+.dark .kicker,.midnight .kicker{color:#7cc2ff}
+h1{font-size:92px;line-height:1.01;letter-spacing:-4.2px;margin:0;font-weight:650;text-wrap:balance}
+h2{font-size:74px;line-height:1.04;letter-spacing:-3px;margin:0;font-weight:650;text-wrap:balance}
+h3{font-size:46px;line-height:1.08;letter-spacing:-1.4px;margin:0;font-weight:620;text-wrap:balance}
+p{margin:0;font-size:34px;line-height:1.35;letter-spacing:-.7px;color:rgba(11,13,18,.72);text-wrap:pretty}
+.dark p,.midnight p{color:rgba(255,255,255,.72)}
+.big-sub{font-size:42px;line-height:1.25;letter-spacing:-1.2px;max-width:980px;color:rgba(255,255,255,.84);margin-top:34px}.white .big-sub,.gray .big-sub{color:rgba(11,13,18,.70)}
+.center{display:grid;place-items:center;text-align:center;height:100%;padding-top:20px}
+.center h1,.center h2{max-width:1450px;margin:auto}.center p{max-width:1040px;margin:34px auto 0}
+.grid{display:grid;gap:28px}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}.grid.four{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:38px;box-shadow:0 20px 50px rgba(50,50,93,.10),0 8px 20px rgba(0,0,0,.06)}
+.dark .card,.midnight .card{background:rgba(255,255,255,.07);border:1px solid var(--line-dark);box-shadow:none;color:#fff}
+.card h3{font-size:42px;line-height:1.08;margin-bottom:18px}.card p{font-size:28px;line-height:1.34;color:rgba(11,13,18,.66)}.dark .card p,.midnight .card p{color:rgba(255,255,255,.68)}
+.stat{font-size:88px;line-height:.94;letter-spacing:-4px;font-weight:680;color:var(--blue)}.stat-label{font-size:25px;line-height:1.25;color:var(--muted);margin-top:16px}.dark .stat-label,.midnight .stat-label{color:rgba(255,255,255,.58)}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:999px;padding:13px 22px;font-size:21px;font-weight:650;letter-spacing:-.2px;background:rgba(0,113,227,.10);color:var(--blue);border:1px solid rgba(0,113,227,.18)}
+.dark .pill,.midnight .pill{background:rgba(41,151,255,.14);color:#7cc2ff;border:1px solid rgba(41,151,255,.22)}
+.hero-grid{height:100%;display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center}.hero-copy{padding-top:8px}.hero-copy h1{max-width:940px}.hero-copy p{margin-top:28px;max-width:850px}.hero-panel{height:650px;position:relative;border-radius:42px;background:linear-gradient(180deg,#11141d,#05060a);border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(.2px);opacity:.95}.orb.one{width:390px;height:390px;right:80px;top:82px;background:radial-gradient(circle at 34% 32%,#8fd0ff,#0071e3 58%,#003c82)}.orb.two{width:220px;height:220px;left:120px;bottom:125px;background:radial-gradient(circle at 32% 30%,#b9b2ff,#6d5cff 62%,#271d92)}.ring{position:absolute;border:1px solid rgba(255,255,255,.18);border-radius:50%;inset:88px}.ring.r2{inset:154px;opacity:.65}.ring.r3{inset:235px;opacity:.45}.agent-dot{position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 30px rgba(255,255,255,.72)}.agent-dot.d1{left:280px;top:180px}.agent-dot.d2{right:330px;bottom:170px}.agent-dot.d3{left:420px;bottom:260px}.panel-caption{position:absolute;left:54px;right:54px;bottom:52px;border-radius:24px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:28px 30px;backdrop-filter:blur(22px)}.panel-caption b{display:block;font-size:30px;letter-spacing:-.7px}.panel-caption span{display:block;margin-top:7px;font-size:23px;color:rgba(255,255,255,.76)}
+.columns-title{display:flex;justify-content:space-between;align-items:end;margin-top:62px;margin-bottom:38px}.columns-title p{max-width:820px;text-align:right;font-size:31px;color:rgba(11,13,18,.74)}.signal-row{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}.signal{height:430px;border-radius:34px;padding:36px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 48px rgba(0,0,0,.07)}.signal .num{font-family:var(--mono);font-size:22px;color:var(--blue)}.signal .name{font-size:48px;letter-spacing:-1.6px;font-weight:650}.signal .line{height:1px;background:var(--line);margin:18px 0}.signal .desc{font-size:32px;line-height:1.23;color:rgba(11,13,18,.78)}.signal .tag{font-family:var(--mono);font-size:22px;color:rgba(11,13,18,.54)}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;align-items:stretch;margin-top:70px}.flow-step{height:210px;border-radius:30px;background:#fff;border:1px solid var(--line);padding:28px;position:relative;box-shadow:0 12px 36px rgba(0,0,0,.06)}.flow-step b{font-size:27px;display:block;letter-spacing:-.6px}.flow-step span{font-size:21px;color:var(--muted);display:block;margin-top:12px;line-height:1.25}.flow-step:after{content:'→';position:absolute;right:-22px;top:50%;transform:translateY(-50%);font-size:46px;color:rgba(0,113,227,.42);z-index:2}.flow-step:last-child:after{display:none}.outcome{margin-top:58px;border-radius:36px;background:#000;color:#fff;padding:38px 44px;display:flex;align-items:center;justify-content:space-between}.outcome b{font-size:42px;letter-spacing:-1.4px}.outcome span{font-size:28px;color:rgba(255,255,255,.64)}
+.layer-diagram{height:620px;margin-top:52px;position:relative}.layer{position:absolute;left:0;right:0;height:112px;border-radius:32px;border:1px solid var(--line);background:#fff;display:grid;grid-template-columns:310px 1fr 300px;align-items:center;padding:0 40px;box-shadow:0 18px 46px rgba(0,0,0,.07)}.layer.l1{top:0}.layer.l2{top:152px}.layer.l3{top:304px}.layer.l4{top:456px;background:#06070b;color:#fff}.layer .label{font-size:32px;font-weight:660;letter-spacing:-.8px}.layer .items{display:flex;gap:14px;flex-wrap:wrap}.chip{font-size:22px;padding:12px 16px;border-radius:999px;background:#f1f3f7;color:rgba(11,13,18,.70);border:1px solid var(--line)}.layer.l4 .chip{background:rgba(255,255,255,.12);color:rgba(255,255,255,.78);border-color:rgba(255,255,255,.16)}.layer .arrow{font-size:26px;color:var(--blue);text-align:right;font-weight:650}
+.case{display:grid;grid-template-columns:.95fr 1.05fr;gap:54px;align-items:center;margin-top:46px}.mock{height:650px;border-radius:40px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:34px}.mock.darkmock{background:#11141c;color:#fff;border-color:rgba(255,255,255,.12)}.ledger{display:grid;gap:16px;margin-top:28px}.ledger-row{display:grid;grid-template-columns:150px 1fr 140px;gap:20px;align-items:center;padding:20px 22px;border-radius:20px;background:#f5f7fb}.ledger-row .amt{font-family:var(--mono);font-size:24px;font-weight:700}.ledger-row .who{font-size:25px;font-weight:600}.badge{font-size:19px;font-weight:700;border-radius:999px;padding:8px 14px;text-align:center}.ok{background:rgba(11,122,83,.10);color:var(--green)}.warn{background:rgba(180,35,24,.10);color:var(--red)}.quote{margin-top:36px;padding:32px 36px;border-radius:28px;background:#000;color:#fff;font-size:34px;line-height:1.25;letter-spacing:-.8px}.quote.light{background:#f1f3f7;color:var(--ink)}
+.pattern-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:58px}.pattern{height:460px;border-radius:32px;padding:34px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between}.pattern .top{font-size:24px;font-family:var(--mono);color:var(--blue)}.pattern .main{font-size:39px;line-height:1.08;letter-spacing:-1.2px;font-weight:650}.pattern .small{font-size:24px;color:var(--muted);line-height:1.26}.formula{position:absolute;left:112px;right:112px;bottom:78px;border-radius:30px;background:#000;color:#fff;padding:28px 36px;display:flex;justify-content:center;gap:24px;align-items:center;font-size:34px;letter-spacing:-.8px}.formula span{color:#8ec8ff}.formula .plus{color:rgba(255,255,255,.35)}
+.chat{height:645px;border-radius:40px;background:#11141c;color:#fff;border:1px solid rgba(255,255,255,.13);box-shadow:var(--shadow);padding:38px;display:flex;flex-direction:column}.chat-head{display:flex;gap:14px;align-items:center;color:rgba(255,255,255,.62);font-family:var(--mono);font-size:20px;margin-bottom:34px}.dot{width:16px;height:16px;border-radius:50%;background:#34c759}.bubble{padding:26px 30px;border-radius:28px;margin-bottom:22px;font-size:30px;line-height:1.3;letter-spacing:-.5px}.bubble.q{background:#2a2f3c;align-self:flex-start;max-width:680px}.bubble.a{background:#f5f5f7;color:#11141c;align-self:flex-end;max-width:760px}.evidence{margin-top:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.ev{border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:16px;text-align:center;font-size:19px;color:rgba(255,255,255,.72)}
+.dead-live{display:grid;grid-template-columns:1fr 120px 1fr;gap:34px;align-items:center;margin-top:74px}.pile,.brain{height:575px;border-radius:40px;padding:44px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.07)}.pile{background:#fff}.brain{background:#000;color:#fff;position:relative;overflow:hidden}.pile h3,.brain h3{font-size:54px}.file-stack{margin-top:42px;display:grid;gap:18px}.file{height:76px;border-radius:18px;background:#f1f3f7;border:1px solid var(--line);display:flex;align-items:center;padding:0 24px;font-size:25px;color:rgba(11,13,18,.62)}.brain-core{position:absolute;width:390px;height:390px;border-radius:50%;right:50px;bottom:42px;background:radial-gradient(circle at 32% 25%,#8fd0ff,#0071e3 58%,#002c62);box-shadow:0 0 0 42px rgba(41,151,255,.10),0 0 0 92px rgba(41,151,255,.06)}.brain-list{position:relative;z-index:2;margin-top:42px;display:grid;gap:18px}.brain-item{font-size:29px;color:rgba(255,255,255,.80)}.arrow-big{text-align:center;font-size:86px;color:var(--blue);font-weight:300}
+.map{height:600px;margin-top:50px;border-radius:40px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative;padding:42px}.axis-y{position:absolute;left:32px;top:44px;bottom:70px;width:2px;background:#0b0d12}.axis-x{position:absolute;left:32px;right:70px;bottom:70px;height:2px;background:#0b0d12}.axis-label{position:absolute;font-family:var(--mono);font-size:18px;color:var(--muted);letter-spacing:.04em}.axis-label.y{left:15px;top:30px;writing-mode:vertical-rl;transform:rotate(180deg)}.axis-label.x{right:70px;bottom:28px}.bubble-map{position:absolute;border-radius:999px;padding:18px 24px;font-size:24px;font-weight:700;box-shadow:0 16px 36px rgba(0,0,0,.10)}.b1{left:280px;bottom:230px;background:#e8f3ff;color:#0057b7}.b2{left:610px;bottom:390px;background:#e9f9f2;color:#08724f}.b3{right:250px;bottom:315px;background:#f1efff;color:#5841db}.b4{left:910px;bottom:160px;background:#fff5df;color:#8a5d12}.b5{right:120px;bottom:438px;background:#000;color:#fff}.map-note{position:absolute;right:46px;top:46px;max-width:390px;font-size:26px;line-height:1.25;color:rgba(11,13,18,.66)}
+.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:52px}.offer{height:590px;border-radius:36px;background:#fff;border:1px solid var(--line);box-shadow:0 20px 54px rgba(0,0,0,.08);padding:36px;display:flex;flex-direction:column}.offer.reco{background:#000;color:#fff;transform:translateY(-18px);box-shadow:0 34px 90px rgba(0,0,0,.27)}.offer .eyebrow{font-size:18px;text-transform:uppercase;letter-spacing:.14em;font-weight:750;color:var(--blue);margin-bottom:18px}.offer.reco .eyebrow{color:#8ec8ff}.offer h3{font-size:45px;line-height:1.03;margin-bottom:18px}.offer .cadence{font-size:30px;font-weight:650;margin-bottom:26px;color:rgba(11,13,18,.72)}.offer.reco .cadence{color:rgba(255,255,255,.72)}.offer ul{list-style:none;margin:0;padding:0;display:grid;gap:17px}.offer li{font-size:25px;line-height:1.25;color:rgba(11,13,18,.66);padding-left:30px;position:relative}.offer li:before{content:'•';position:absolute;left:0;color:var(--blue);font-weight:800}.offer.reco li{color:rgba(255,255,255,.70)}.offer .bottom{margin-top:auto;padding-top:24px;font-size:23px;color:rgba(11,13,18,.62);border-top:1px solid var(--line)}.offer.reco .bottom{color:rgba(255,255,255,.76);border-color:rgba(255,255,255,.18)}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:70px}.month{height:470px;border-radius:36px;background:#fff;border:1px solid var(--line);padding:38px;box-shadow:0 18px 48px rgba(0,0,0,.07)}.month .mno{font-family:var(--mono);font-size:20px;color:var(--blue);margin-bottom:22px}.month h3{font-size:46px;margin-bottom:22px}.month p{font-size:28px}.month .deliver{margin-top:32px;display:inline-block;border-radius:999px;background:#f1f3f7;padding:13px 18px;font-size:22px;font-weight:650;color:rgba(11,13,18,.70)}
+.opportunity-lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:58px}.lane{min-height:360px;border-radius:34px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.07);padding:34px;display:flex;flex-direction:column;justify-content:space-between}.lane .verb{font-size:22px;font-family:var(--mono);color:var(--blue);margin-bottom:22px}.lane h3{font-size:42px;margin-bottom:18px}.lane p{font-size:27px}.lane .example{margin-top:26px;border-radius:20px;background:#f1f3f7;padding:18px 20px;font-size:22px;color:rgba(11,13,18,.66)}.translation-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:34px}.translation-flow .step{border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);padding:20px 18px;text-align:center}.translation-flow .step b{display:block;font-size:24px;margin-bottom:8px}.translation-flow .step span{font-size:19px;color:rgba(255,255,255,.70);line-height:1.22}.translation-flow .step:nth-child(2){background:rgba(41,151,255,.20);border-color:rgba(41,151,255,.42);box-shadow:0 0 0 1px rgba(41,151,255,.10) inset}.mini-note{margin-top:26px;font-size:24px;color:rgba(255,255,255,.70);line-height:1.28}.team-boost{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:58px}.boost-card{border-radius:34px;background:#fff;border:1px solid var(--line);padding:38px;box-shadow:0 18px 48px rgba(0,0,0,.07);min-height:300px}.boost-card h3{font-size:42px}.boost-card p{font-size:28px;margin-top:18px}.boost-card.dark{background:#000;color:#fff}.boost-card.dark p{color:rgba(255,255,255,.70)}
+.final-questions{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:58px}.fq{height:122px;border-radius:24px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;padding:0 30px;font-size:31px;letter-spacing:-.8px;color:rgba(255,255,255,.82)}.cta-strip{position:absolute;left:112px;right:112px;bottom:76px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.18);padding-top:34px}.cta-strip .who{font-size:28px;color:#fff;font-weight:650}.cta-strip .role{font-size:22px;color:rgba(255,255,255,.56);margin-top:4px}.cta-strip .ask{font-size:26px;color:#8ec8ff;font-weight:650}
+.nav{position:fixed;right:26px;bottom:22px;z-index:20;background:rgba(16,17,23,.46);border:1px solid rgba(255,255,255,.12);backdrop-filter:saturate(160%) blur(18px);border-radius:999px;padding:6px 9px;display:flex;align-items:center;gap:6px;color:#fff;box-shadow:0 12px 34px rgba(0,0,0,.16);opacity:.22;transition:opacity .18s}.nav:hover{opacity:.92}.nav button{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}.nav button:hover{background:rgba(255,255,255,.18)}.counter{font-family:var(--mono);font-size:12px;padding:0 6px;color:rgba(255,255,255,.72)}.progress{position:fixed;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12);z-index:21}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--violet));transition:width .25s ease}
+.help{display:none}.hide-ui .nav,.hide-ui .help,.hide-ui .progress{display:none}
+@media print{html,body{overflow:visible;background:#fff}.deck-stage{position:static;display:block;background:#fff}.deck{width:auto;height:auto;transform:none!important;box-shadow:none;background:#fff}.slide{position:relative;display:block!important;page-break-after:always;width:1920px;height:1080px}.nav,.help,.progress{display:none}}
+</style>
+</head>
+<body>
+<div class="deck-stage">
+<main class="deck" id="deck" aria-label="Deck de presentación">
+
+<section class="slide dark active" data-title="Portada">
+  <div class="topbar"><div class="brand"></div><div class="slide-no">01</div></div>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="kicker">Demo ejecutivo</div>
+      <h1>AI no se adopta con una clase.<br>Se adopta cambiando cómo trabaja el equipo.</h1>
+      <p class="big-sub">La oportunidad no es “usar ChatGPT”. Es convertir trabajo diario en procesos asistidos, medibles y repetibles.</p>
+    </div>
+    <div class="hero-panel" aria-hidden="true">
+      <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="orb one"></div><div class="orb two"></div>
+      <div class="agent-dot d1"></div><div class="agent-dot d2"></div><div class="agent-dot d3"></div>
+      <div class="panel-caption"><b>Objetivo de hoy</b><span>Entender la tendencia y bajar 2–3 quick wins a tu operación.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide white" data-title="La ventana">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> La ventana</div><div class="slide-no">02</div></div>
+  <div class="center">
+    <div>
+      <div class="kicker">Todavía es temprano</div>
+      <h2>La mayoría ya probó AI.<br>Muy pocos la convirtieron en operación.</h2>
+      <p>Ahí está la oportunidad: no en saber más prompts, sino en saber qué proceso cambiar primero.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide gray" data-title="Hard data">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Hard data</div><div class="slide-no">03</div></div>
+  <div class="columns-title">
+    <h2>Adopción alta.<br>Transformación baja.</h2>
+    <p>La brecha no es tecnológica: es de implementación, medición y escala.</p>
+  </div>
+  <div class="signal-row">
+    <div class="signal"><div><div class="num">Microsoft + LinkedIn</div><div class="name">75%</div><div class="line"></div><div class="desc">de empleados de oficina ya usan AI en el trabajo.</div></div><div class="tag">Work Trend Index 2024</div></div>
+    <div class="signal"><div><div class="num">MIT / NANDA</div><div class="name">95%</div><div class="line"></div><div class="desc">de pilotos GenAI no muestran ROI medible.</div></div><div class="tag">State of AI in Business 2025</div></div>
+    <div class="signal"><div><div class="num">BCG AI Radar</div><div class="name">25%</div><div class="line"></div><div class="desc">de ejecutivos afirma que su empresa creó valor significativo con AI.</div></div><div class="tag">AI Radar 2025</div></div>
+  </div>
+</section>
+
+<section class="slide midnight" data-title="El problema real">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Diagnóstico</div><div class="slide-no">04</div></div>
+  <div class="center">
+    <div>
+      <div class="kicker">Por qué falla</div>
+      <h2>No falla porque el modelo sea malo.<br>Falla porque no entra al proceso diario.</h2>
+      <div class="grid three" style="margin-top:72px;text-align:left">
+        <div class="card"><span class="pill">sin contexto</span><h3 style="margin-top:28px">Respuestas genéricas</h3><p>El AI no conoce archivos, reglas ni excepciones de la empresa.</p></div>
+        <div class="card"><span class="pill">sin integración</span><h3 style="margin-top:28px">Trabajo duplicado</h3><p>La persona sigue copiando, pegando y validando todo manualmente.</p></div>
+        <div class="card"><span class="pill">sin hábito</span><h3 style="margin-top:28px">Demo que se muere</h3><p>Un taller emociona; la operación cambia con cadencia y seguimiento.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide white" data-title="La respuesta del mercado">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Forward Deployed Accelerator</div><div class="slide-no">05</div></div>
+  <div class="kicker">La respuesta que ya existe en mercado</div>
+  <h2>Empresas avanzadas están incorporando aceleradores de AI dentro de sus equipos.</h2>
+  <p style="max-width:1120px;margin-top:24px">No para dar cursos. Para estar cerca del trabajo diario, detectar fricción, construir junto al equipo y volver permanente el cambio.</p>
+  <div class="flow">
+    <div class="flow-step"><b>Se embebe</b><span>Trabaja con un grupo específico, no desde afuera.</span></div>
+    <div class="flow-step"><b>Observa</b><span>Detecta tareas repetidas, cuellos de botella y decisiones lentas.</span></div>
+    <div class="flow-step"><b>Construye</b><span>Convierte casos concretos en procesos y plantillas.</span></div>
+    <div class="flow-step"><b>Entrena</b><span>El equipo aprende usando su propio trabajo.</span></div>
+    <div class="flow-step"><b>Mide</b><span>Éxito = procesos mejorados y adopción real.</span></div>
+  </div>
+  <div class="outcome"><b>La categoría</b><span>Forward Deployed AI Accelerator: implementación dentro del trabajo diario.</span></div>
+</section>
+
+<section class="slide gray" data-title="Qué significa para ustedes">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Traducción local</div><div class="slide-no">06</div></div>
+  <div class="center">
+    <div>
+      <div class="kicker">Para empresarios tradicionales</div>
+      <h2>No necesitan volverse expertos en AI.<br>Necesitan un sistema para aprender rápido.</h2>
+      <p>Quick wins para ver valor pronto. Cadencia para que no se quede en moda. Criterio para no automatizar lo incorrecto.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide blueprint" data-title="Mi forma de trabajar">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Método</div><div class="slide-no">07</div></div>
+  <div class="kicker">Cómo lo aterrizo yo</div>
+  <h2>Mi trabajo es convertir AI en operación, no vender una herramienta.</h2>
+  <div class="layer-diagram">
+    <div class="layer l1"><div class="label">1. Diagnóstico</div><div class="items"><span class="chip">dolores</span><span class="chip">datos</span><span class="chip">personas</span><span class="chip">riesgos</span></div><div class="arrow">mapear</div></div>
+    <div class="layer l2"><div class="label">2. Quick wins</div><div class="items"><span class="chip">plantillas</span><span class="chip">prompts útiles</span><span class="chip">reportes</span><span class="chip">conciliaciones</span></div><div class="arrow">probar</div></div>
+    <div class="layer l3"><div class="label">3. Procesos</div><div class="items"><span class="chip">playbooks</span><span class="chip">agentes</span><span class="chip">aprobación humana</span><span class="chip">evidencia</span></div><div class="arrow">instalar</div></div>
+    <div class="layer l4"><div class="label">4. Cadencia</div><div class="items"><span class="chip">seguimiento</span><span class="chip">medición</span><span class="chip">mejora</span><span class="chip">nuevos casos</span></div><div class="arrow">sostener</div></div>
+  </div>
+</section>
+
+<section class="slide midnight" data-title="Prueba propia">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Prueba propia</div><div class="slide-no">08</div></div>
+  <div class="case">
+    <div>
+      <div class="kicker">No es teoría</div>
+      <h2>Yo opero mi trabajo con esta lógica todos los días.</h2>
+      <p style="margin-top:28px">Mi propio cerebro digital funciona como sistema operativo: clientes, investigación, tareas, decisiones, propuestas y agentes conectados.</p>
+      <div class="quote">La tesis no salió de una presentación. Salió de operar así.</div>
+    </div>
+    <div class="mock darkmock">
+      <div class="pill">Cerebro digital propio</div>
+      <div class="grid two" style="margin-top:34px">
+        <div class="card"><h3>Memoria</h3><p>Contexto vivo de clientes, decisiones y proyectos.</p></div>
+        <div class="card"><h3>Research</h3><p>Señales de mercado convertidas en estrategia.</p></div>
+        <div class="card"><h3>Delivery</h3><p>Propuestas, demos, decks y procesos.</p></div>
+        <div class="card"><h3>Agentes</h3><p>Herramientas que leen, escriben, revisan y ejecutan.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide gray" data-title="Archivo muerto">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Brainwork</div><div class="slide-no">09</div></div>
+  <div class="kicker">La brecha en muchas empresas</div>
+  <h2>Tienen información. Pero no tienen un cerebro operativo.</h2>
+  <div class="dead-live">
+    <div class="pile"><h3>Archivo muerto</h3><div class="file-stack"><div class="file">Drive / carpetas</div><div class="file">PDFs y Excel</div><div class="file">correos viejos</div><div class="file">minutas perdidas</div></div></div>
+    <div class="arrow-big">→</div>
+    <div class="brain"><h3>Activo vivo</h3><div class="brain-list"><div class="brain-item">contesta</div><div class="brain-item">cita fuentes</div><div class="brain-item">actualiza</div><div class="brain-item">propone acciones</div></div><div class="brain-core"></div></div>
+  </div>
+</section>
+
+<section class="slide gray" data-title="Caso Martínez">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Prueba técnica</div><div class="slide-no">10</div></div>
+  <div class="case">
+    <div>
+      <div class="kicker">Martínez Asesores</div>
+      <h2>De revisar todo a revisar excepciones.</h2>
+      <p style="margin-top:28px">Prueba/cotización de AI aplicada a conciliación bancaria: menos captura, más criterio contable.</p>
+      <div class="quote light">La conversación cambia: “haz la chamba” se vuelve “explícame lo raro”.</div>
+    </div>
+    <div class="mock">
+      <div class="pill">Prototipo validado</div>
+      <div style="margin-top:30px"><span class="stat">97.6%</span><div class="stat-label">286 de 293 movimientos conciliados en prueba técnica</div></div>
+      <div class="ledger">
+        <div class="ledger-row"><span class="amt">$12,430</span><span class="who">Ingreso identificado</span><span class="badge ok">match</span></div>
+        <div class="ledger-row"><span class="amt">$8,920</span><span class="who">Proveedor validado</span><span class="badge ok">match</span></div>
+        <div class="ledger-row"><span class="amt">$3,110</span><span class="who">Movimiento sin par</span><span class="badge warn">excepción</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide white" data-title="Quick wins posibles">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Ejemplos aplicables</div><div class="slide-no">11</div></div>
+  <div class="kicker">Cómo se ve en una empresa normal</div>
+  <h2>La oportunidad aparece donde alguien traduce información todos los días.</h2>
+  <div class="opportunity-lanes">
+    <div class="lane"><div><div class="verb">COMPARAR</div><h3>Dos fuentes de verdad</h3><p>Banco contra facturas, inventario contra ventas, reporte contra sistema.</p></div><div class="example">AI resalta diferencias y pide revisión humana.</div></div>
+    <div class="lane"><div><div class="verb">BUSCAR</div><h3>Información enterrada</h3><p>PDFs, correos, minutas, cotizaciones o políticas que nadie encuentra.</p></div><div class="example">AI contesta con fuente y contexto.</div></div>
+    <div class="lane"><div><div class="verb">EXPLICAR</div><h3>Datos técnicos</h3><p>Información de sistemas que solo entiende alguien con experiencia.</p></div><div class="example">AI traduce a lenguaje de negocio.</div></div>
+    <div class="lane"><div><div class="verb">DAR SEGUIMIENTO</div><h3>Tareas repetidas</h3><p>Recordatorios, avances, pendientes y preparación de juntas.</p></div><div class="example">AI prepara el siguiente paso.</div></div>
+  </div>
+</section>
+
+<section class="slide gray" data-title="Caso Vitau">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Caso real</div><div class="slide-no">12</div></div>
+  <div class="case">
+    <div>
+      <div class="kicker">Vitau</div>
+      <h2>Un intermediario entre preguntas humanas y datos técnicos.</h2>
+      <p style="margin-top:28px">La persona pregunta en Slack como hablaría en junta. El agente entiende la intención, genera una consulta segura, recupera datos y responde en español con evidencia.</p>
+      <div class="quote light">El LLM no “adivina”: traduce intención, arma la consulta y explica el resultado para alguien que no sabe SQL.</div>
+    </div>
+    <div class="chat">
+      <div class="chat-head"><span class="dot"></span># data-analisis</div>
+      <div class="bubble q">¿Cuántas órdenes canceladas hubo la semana pasada y por qué?</div>
+      <div class="bubble a">Te regreso respuesta ejecutiva, consulta generada, fuente y excepciones para revisar.</div>
+      <div class="translation-flow"><div class="step"><b>Pregunta</b><span>lenguaje humano</span></div><div class="step"><b>LLM</b><span>entiende intención</span></div><div class="step"><b>Consulta</b><span>controlada / SQL</span></div><div class="step"><b>Datos</b><span>datos internos</span></div><div class="step"><b>Respuesta</b><span>español claro</span></div></div>
+      <div class="mini-note">Aplicable a ventas, cobranza, operación, inventario, servicio al cliente o cualquier área con datos difíciles de consultar.</div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide gray" data-title="Caso Illinium">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Caso real</div><div class="slide-no">13</div></div>
+  <div class="kicker">Illinium</div>
+  <h2>Acelerar equipos internos que ya tienen gente técnica.</h2>
+  <p style="max-width:1160px;margin-top:24px">Si una empresa ya tiene desarrolladores, pero no están actualizados en AI, puedo entrar como acelerador: nuevas prácticas, mejores flujos de desarrollo y ejemplos concretos aplicados al negocio.</p>
+  <div class="team-boost">
+    <div class="boost-card"><span class="pill">Desarrollo</span><h3 style="margin-top:24px">Mejorar al equipo en 1–2 meses</h3><p>Pairing, herramientas, patrones de agentes, prompts técnicos, revisión de arquitectura y criterio para usar AI sin hacer desorden.</p></div>
+    <div class="boost-card dark"><span class="pill">Marketing / contenido</span><h3 style="margin-top:24px">Pipelines de contenido</h3><p>Ideación, análisis de anuncios, producción asistida, revisión y publicación con proceso. No magia: flujo completo.</p></div>
+  </div>
+</section>
+
+<section class="slide white" data-title="Patrón común">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Dónde buscar</div><div class="slide-no">14</div></div>
+  <div class="kicker">Regla simple</div>
+  <h2>Un buen quick win vive donde hay repetición, datos y criterio humano.</h2>
+  <div class="formula" style="position:static;margin-top:30px;background:#000;color:#fff"><span>repetición</span><b class="plus">+</b><span>datos existentes</span><b class="plus">+</b><span>criterio humano</span><b class="plus">=</b><b>quick win</b></div>
+  <div class="opportunity-lanes" style="grid-template-columns:repeat(3,1fr);margin-top:42px">
+    <div class="lane"><div><div class="verb">1. REPETICIÓN</div><h3>Alguien hace lo mismo cada semana</h3><p>Copiar, pegar, comparar, resumir, buscar, preparar o validar.</p></div><div class="example">Se puede acelerar rápido.</div></div>
+    <div class="lane"><div><div class="verb">2. DATOS</div><h3>La información ya existe</h3><p>Está en Excel, Drive, correo, sistema, base de datos o PDF.</p></div><div class="example">No hay que inventar todo.</div></div>
+    <div class="lane"><div><div class="verb">3. CRITERIO</div><h3>Un humano decide al final</h3><p>AI prepara, compara y explica; la persona aprueba lo importante.</p></div><div class="example">Control sin frenar velocidad.</div></div>
+  </div>
+</section>
+
+<section class="slide midnight" data-title="Quick wins no magia">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Regla honesta</div><div class="slide-no">15</div></div>
+  <div class="center">
+    <div>
+      <div class="kicker">Lo que sí y lo que no</div>
+      <h2>AI puede dar quick wins rápido.<br>Pero no es magia de una sola vez.</h2>
+      <div class="grid three" style="margin-top:72px;text-align:left">
+        <div class="card"><span class="pill">Semana 1</span><h3 style="margin-top:28px">Ver valor</h3><p>Casos simples, plantillas y tareas repetidas.</p></div>
+        <div class="card"><span class="pill">Mes 1</span><h3 style="margin-top:28px">Crear hábito</h3><p>El equipo aprende con sus propios archivos y problemas.</p></div>
+        <div class="card"><span class="pill">Mes 3</span><h3 style="margin-top:28px">Decidir inversión</h3><p>Separar lo que queda como práctica de lo que amerita sistema.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide blueprint" data-title="AI Opportunity Map">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Primer entregable</div><div class="slide-no">16</div></div>
+  <div class="kicker">AI Opportunity Map</div>
+  <h2>El primer entregable es un mapa, no una promesa.</h2>
+  <div class="map">
+    <div class="axis-y"></div><div class="axis-x"></div><div class="axis-label y">IMPACTO ↑</div><div class="axis-label x">DIFICULTAD →</div>
+    <div class="map-note">Priorizamos por impacto, dificultad, datos necesarios, riesgo y dueño operativo.</div>
+    <div class="bubble-map b1">Conciliación</div><div class="bubble-map b2">Bot de datos</div><div class="bubble-map b3">Cerebro digital</div><div class="bubble-map b4">Contenido</div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="Cómo trabajar juntos">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Modelo de trabajo</div><div class="slide-no">17</div></div>
+  <div class="center">
+    <div>
+      <div class="kicker">El punto del acompañamiento</div>
+      <h2>No compras “AI”.<br>Compras un partner que instala criterio, ritmo y ejecución.</h2>
+      <p>Estoy cerca del equipo, veo casos reales, preparo materiales entre sesiones y convierto ideas sueltas en procesos que sí se pueden probar.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide gray" data-title="Tres cadencias">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Oferta de acompañamiento</div><div class="slide-no">18</div></div>
+  <div class="kicker">Ellos deciden la cadencia</div>
+  <h2>Tres formas de tener un partner de AI.</h2>
+  <div class="offer-grid">
+    <div class="offer">
+      <div class="eyebrow">Arranque</div><h3>AI Aplicada</h3><div class="cadence">2 sesiones al mes</div>
+      <ul><li>Backlog inicial de oportunidades.</li><li>Prompts, plantillas y quick wins.</li><li>Un proceso diario simple documentado.</li><li>Ideal para empezar cómodo.</li></ul>
+      <div class="bottom">Sin soporte abierto ni desarrollo pesado.</div>
+    </div>
+    <div class="offer reco">
+      <div class="eyebrow">Recomendado</div><h3>Acompañamiento semanal</h3><div class="cadence">1 sesión por semana</div>
+      <ul><li>1–2 frentes activos por mes.</li><li>Trabajo de laboratorio entre sesiones.</li><li>Procesos, playbooks y demos controladas.</li><li>Momentum real con el equipo.</li></ul>
+      <div class="bottom">La opción para que sí cambie la forma de operar.</div>
+    </div>
+    <div class="offer">
+      <div class="eyebrow">Partner</div><h3>Socio AI Operativo</h3><div class="cadence">Mayor cercanía</div>
+      <ul><li>Juntas clave con socios o clientes.</li><li>2–3 frentes activos.</li><li>Roadmap 30/60/90.</li><li>Oportunidades convertidas en proyectos vendibles.</li></ul>
+      <div class="bottom">Automatizaciones productivas se cotizan aparte.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide white" data-title="Piloto 90 días">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Ruta sugerida</div><div class="slide-no">19</div></div>
+  <div class="kicker">Cómo se siente en la práctica</div>
+  <h2>Un piloto de 90 días reduce riesgo y crea hábito.</h2>
+  <div class="timeline">
+    <div class="month"><div class="mno">MES 01</div><h3>Mapa y quick wins</h3><p>Detectar dónde hay dinero, tiempo o ventas atrapadas.</p><span class="deliver">Opportunity Map</span></div>
+    <div class="month"><div class="mno">MES 02</div><h3>Procesos en uso</h3><p>Probar con casos reales y ajustar con el equipo.</p><span class="deliver">Playbook + plantillas</span></div>
+    <div class="month"><div class="mno">MES 03</div><h3>Decidir inversión</h3><p>Separar hábito, retainer y proyectos productivos.</p><span class="deliver">Roadmap 30/60/90</span></div>
+  </div>
+</section>
+
+<section class="slide midnight" data-title="Cierre">
+  <div class="topbar"><div class="brand"><span class="brand-mark"></span> Cierre</div><div class="slide-no">20</div></div>
+  <div class="kicker">Pregunta ejecutiva</div>
+  <h1 style="max-width:1480px">¿Qué proceso de tu empresa debería trabajar distinto en 90 días?</h1>
+  <p class="big-sub">No necesitamos transformar todo. Necesitamos escoger bien los primeros 2–3 procesos y sostener la cadencia.</p>
+  <div class="final-questions">
+    <div class="fq">¿Dónde se copia y pega?</div><div class="fq">¿Qué dato nadie consulta?</div><div class="fq">¿Qué decisión espera?</div><div class="fq">¿Qué proceso duele cada mes?</div>
+  </div>
+  <div class="cta-strip"><div><div class="who">Rogelio Guzmán</div><div class="role">rogelioguzmanmtz@gmail.com · +52 81 1999 2592</div></div><div class="ask">Siguiente paso: elegir proceso + cadencia.</div></div>
+</section>
+
+</main>
+</div>
+<nav class="nav" aria-label="Navegación del deck"><button id="prev" title="Anterior">‹</button><div class="counter" id="counter">1 / 20</div><button id="next" title="Siguiente">›</button></nav>
+<div class="help">← → navegar · O overview · F pantalla completa · H ocultar UI</div>
+<div class="progress"><span id="progress"></span></div>
+<script>
+(function(){
+  const deck=document.getElementById('deck');
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  let index=Number(localStorage.getItem('amigosPapaDeckSlide')||0);
+  if(!Number.isFinite(index)||index<0||index>=slides.length) index=0;
+  function scale(){
+    const s=Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    deck.style.transform=`translate(-50%, -50%) scale(${s})`;
+  }
+  function show(i){
+    index=(i+slides.length)%slides.length;
+    slides.forEach((slide,n)=>slide.classList.toggle('active',n===index));
+    counter.textContent=`${index+1} / ${slides.length}`;
+    progress.style.width=`${((index+1)/slides.length)*100}%`;
+    localStorage.setItem('amigosPapaDeckSlide',String(index));
+    document.title=`${String(index+1).padStart(2,'0')} · ${slides[index].dataset.title||'Deck'}`;
+  }
+  document.getElementById('prev').addEventListener('click',()=>show(index-1));
+  document.getElementById('next').addEventListener('click',()=>show(index+1));
+  window.addEventListener('resize',scale);
+  window.addEventListener('keydown',(e)=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(index+1)}
+    if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(index-1)}
+    if(e.key==='Home') show(0);
+    if(e.key==='End') show(slides.length-1);
+    if(e.key.toLowerCase()==='f') document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+    if(e.key.toLowerCase()==='h') document.body.classList.toggle('hide-ui');
+    if(e.key.toLowerCase()==='o'){
+      const titles=slides.map((s,n)=>`${n+1}. ${s.dataset.title||'Slide'}`).join('\n');
+      const pick=prompt('Ir a slide:\n\n'+titles, String(index+1));
+      if(pick){const n=parseInt(pick,10); if(n>=1&&n<=slides.length) show(n-1)}
+    }
+  });
+  scale(); show(index);
+})();
+</script>
+</body>
+</html>
